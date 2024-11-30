@@ -4,13 +4,15 @@ from allauth.account.models import EmailAddress
 from django.contrib.auth.models import User
 from .models import Profile
 
+
 @receiver(post_save, sender=User)
 def user_postsave(sender, instance, created, **kwargs):
     user = instance
 
+    # add profile if user is created
     if created:
         Profile.objects.create(
-        user=user,
+            user=user,
         )
     else:
         try:
@@ -21,10 +23,10 @@ def user_postsave(sender, instance, created, **kwargs):
                 email_address.save()
         except:
             EmailAddress.objects.create(
-                user = user,
-                email = user.email,
-                primary = True,
-                verified = False,
+                user=user,
+                email=user.email,
+                primary=True,
+                verified=False
             )
 
 

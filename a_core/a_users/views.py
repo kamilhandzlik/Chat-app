@@ -48,15 +48,17 @@ def profile_settings_view(request):
 def profile_emailchange(request):
     if request.htmx:
         form = EmailForm(instance=request.user)
-        return render(request, 'partials/emails_form.html', {'form': form})
+        return render(request, 'partials/email_form.html', {'form': form})
 
     if request.method == 'POST':
         form = EmailForm(request.POST, instance=request.user)
 
         if form.is_valid():
+
+            # Check if the email already exists
             email = form.cleaned_data['email']
-            if User.objects.filter(email=email).exclude(id=request.user.id).exist():
-                messages.warning(request, f"{email} is already in use.")
+            if User.objects.filter(email=email).exclude(id=request.user.id).exists():
+                messages.warning(request, f'{email} is already in use.')
                 return redirect('profile-settings')
 
             form.save()
@@ -67,7 +69,6 @@ def profile_emailchange(request):
         else:
             messages.warning(request, 'Form not valid')
             return redirect('profile-settings')
-
 
     return redirect('home')
 
