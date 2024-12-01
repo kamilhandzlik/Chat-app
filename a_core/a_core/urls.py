@@ -19,12 +19,13 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
-    path('', include('a_home.urls')),
+    path('', include('a_rtchat.urls')),
+    path('a-home/', include('a_home.urls')),
     path('a-users/', include('a_users.urls')),
+    path('a-rtchat/', include('a_rtchat.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
