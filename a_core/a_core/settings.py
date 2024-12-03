@@ -88,6 +88,12 @@ TEMPLATES = [
 ASGI_APPLICATION = 'a_core.asgi.application'
 
 
+CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels.layers.InMemoryChannelLayer",
+        }
+} # In production change to redis
+
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
