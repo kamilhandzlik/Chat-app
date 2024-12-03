@@ -19,12 +19,11 @@ class ChatroomConsumer(WebsocketConsumer):
         message = GroupMessage.objects.create(
             body=body,
             author=self.user,
-            group=self.chatroom,
+            group=self.chatroom
         )
         context = {
             'message': message,
             'user': self.user,
-
         }
         html = render_to_string('partials/chat_message_p.html', context=context)
         self.send(text_data=html)
