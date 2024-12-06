@@ -4,12 +4,10 @@ from django.http import Http404
 from .forms import *
 from .models import *
 
-
 @login_required
 def chat_view(request, chatroom_name='public-chat'):
     chat_group = get_object_or_404(ChatGroup, group_name=chatroom_name)
-    chat_messages = chat_group.chat_messages.all()[
-                    :30]  # [:30] ustala liczbę wyświetlonych wiadomości na ostatnie 30 usuń/zmień jeśli chcesz mieć ich więcej/mniej
+    chat_messages = chat_group.chat_messages.all()[:30]   # [:30] ustala liczbę wyświetlonych wiadomości na ostatnie 30 usuń/zmień jeśli chcesz mieć ich więcej/mniej
     form = ChatmessageCreateForm()
 
     other_user = None
@@ -49,23 +47,19 @@ def get_or_create_chatroom(request, username):
     if request.user.username == username:
         return redirect('profile', username=username)
 
-    try:
-        other_user = User.objects.get(username=username)
-    except User.DoesNotExist:
-        raise Http404("User does not exist.")
-
     other_user = User.objects.get(username=username)
     my_chatrooms = request.user.chat_groups.filter(is_private=True)
 
-
-    chatroom = ChatGroup.objects.filter(
-        is_private=True,
-        members=request.user
-    ).filter(members=other_user).first()
-
-
-    if not chatroom:
-        chatroom = ChatGroup.objects.create(is_private=True)
-        chatroom.members.add(request.user, other_user)
+    if my_chatrooms.exists():
+        for chatroom in my_chatrooms:
+            if other_user in chatroom.members.all():
+                chatroom = chatroom
+                break
+            else:
+                chatroom = ChatGroup.objects.create(is_private=True)
+                chatroom.members.add(other_user, request.user)
+        else:
+            chatroom = ChatGroup.objects.create(is_private=True)
+            chatroom.members.add(other_user, request.user)
 
         return redirect('chatroom', chatroom.group_name)
