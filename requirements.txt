@@ -1,7 +1,9 @@
 Django
+daphne
 pillow
 django-cleanup
 django-allauth
 django-htmx
 django-decouple
 django-extensions
+shortuuid
