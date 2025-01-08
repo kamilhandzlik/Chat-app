@@ -15,11 +15,13 @@ def profile_view(request, username=None):
     else:
         try:
             profile = request.user.profile
-        except:
+        except AttributeError:
             return redirect('account_login')
-    profile = request.user.profile
-    return render(request, 'profile.html', {'profile': profile})
 
+    return render(request, 'profile.html', {
+        'profile': profile,
+        'user': request.user
+    })
 
 @login_required()
 def profile_edit_view(request):

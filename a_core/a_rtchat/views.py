@@ -39,6 +39,8 @@ def chat_view(request, chatroom_name='public-chat'):
         'chatroom_name': chatroom_name,
     }
 
+
+
     return render(request, 'chat.html', context)
 
 
@@ -58,8 +60,8 @@ def get_or_create_chatroom(request, username):
             else:
                 chatroom = ChatGroup.objects.create(is_private=True)
                 chatroom.members.add(other_user, request.user)
-        else:
-            chatroom = ChatGroup.objects.create(is_private=True)
-            chatroom.members.add(other_user, request.user)
+    else:
+        chatroom = ChatGroup.objects.create(is_private=True)
+        chatroom.members.add(other_user, request.user)
 
         return redirect('chatroom', chatroom.group_name)
