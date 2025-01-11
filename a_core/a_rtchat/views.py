@@ -5,10 +5,12 @@ from django.http import Http404
 from .forms import *
 from .models import *
 
+
 @login_required
 def chat_view(request, chatroom='public-chat'):
     chat_group = get_object_or_404(ChatGroup, group_name=chatroom)
-    chat_messages = chat_group.chat_messages.all()[:30]   # [:30] ustala liczbę wyświetlonych wiadomości na ostatnie 30 usuń/zmień jeśli chcesz mieć ich więcej/mniej
+    chat_messages = chat_group.chat_messages.all()[
+                    :30]  # [:30] ustala liczbę wyświetlonych wiadomości na ostatnie 30 usuń/zmień jeśli chcesz mieć ich więcej/mniej
     form = ChatmessageCreateForm()
 
     other_user = None
@@ -28,7 +30,6 @@ def chat_view(request, chatroom='public-chat'):
                 messages.warning(request, 'You need to verify your email to join the chat!')
                 return redirect("profile-settings")
 
-
     if request.htmx:
         form = ChatmessageCreateForm(request.POST)
         if form.is_valid:
@@ -47,10 +48,8 @@ def chat_view(request, chatroom='public-chat'):
         'form': form,
         'other_user': other_user,
         'chatroom_name': chatroom,
-        'chat_group' : chat_group
+        'chat_group': chat_group
     }
-
-
 
     return render(request, 'chat.html', context)
 
@@ -62,7 +61,6 @@ def get_or_create_chatroom(request, username):
 
     other_user = get_object_or_404(User, username=username)
 
-
     existing_chatroom = ChatGroup.objects.filter(
         is_private=True,
         members=request.user
@@ -70,7 +68,6 @@ def get_or_create_chatroom(request, username):
 
     if existing_chatroom:
         return redirect('chatroom', chatroom=existing_chatroom.group_name)  # Używamy 'chatroom' zamiast 'chatroom_name'
-
 
     new_chatroom = ChatGroup.objects.create(
         is_private=True,
@@ -97,4 +94,10 @@ def create_groupchat(request):
     context = {
         'form': form,
     }
-    return  render(request, 'create_groupchat.html', context)
+    return render(request, 'create_groupchat.html', context)
+
+
+
+@login_required()
+def chatroom_edit_view(request, chatroom_name):
+    return render(request, 'chatroom_edit.html')

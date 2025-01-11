@@ -8,4 +8,5 @@ urlpatterns = [
     path('chat/<username>', views.get_or_create_chatroom, name='start-chat'),
     path('chat/room/<chatroom>', views.chat_view, name='chatroom'),
     path('chat/new_groupchat/', views.create_groupchat, name='new-groupchat'),
+    path('chat/edit/<chatroom_name>', views.chatroom_edit_view, name='edit-chatroom')
 ]
