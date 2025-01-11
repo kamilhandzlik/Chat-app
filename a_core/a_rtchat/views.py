@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.http import Http404
 from .forms import *
 from .models import *
@@ -21,7 +22,12 @@ def chat_view(request, chatroom='public-chat'):
 
     if chat_group.groupchat_name:
         if request.user not in chat_group.members.all():
-            chat_group.members.add(request.user)
+            if request.user.emailaddress_set.filter(verified=True).exists():
+                chat_group.members.add(request.user)
+            else:
+                messages.warning(request, 'You need to verify your email to join the chat!')
+                return redirect("profile-settings")
+
 
     if request.htmx:
         form = ChatmessageCreateForm(request.POST)
