@@ -163,3 +163,4 @@ cython_debug/
 /Django-CoWork-Connect/desks.json
 
 avatars
+.\a_core\media
